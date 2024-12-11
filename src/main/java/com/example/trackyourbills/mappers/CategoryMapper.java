@@ -10,6 +10,7 @@ public class CategoryMapper {
         CategoryDTO dto = new CategoryDTO();
         dto.setId(category.getId());
         dto.setName(category.getName());
+        dto.setUserId(category.getUser().getId());
         // dto.setTransactionIds(category.getTransactionList()
         //         .stream()
         //         .map(transaction -> transaction.getId())

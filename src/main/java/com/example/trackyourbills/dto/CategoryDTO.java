@@ -15,5 +15,6 @@ public class CategoryDTO {
 
     private Long id;
     private String name;
+    private Long userId;
 //    private List<Long> transactionIds; // Lista identyfikatorów transakcji, nie cała encja
 }

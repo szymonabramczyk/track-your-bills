@@ -2,9 +2,11 @@ package com.example.trackyourbills.services.impl;
 
 import com.example.trackyourbills.dto.CategoryDTO;
 import com.example.trackyourbills.entities.Category;
+import com.example.trackyourbills.entities.User;
 import com.example.trackyourbills.exceptions.ResourceNotFoundException;
 import com.example.trackyourbills.mappers.CategoryMapper;
 import com.example.trackyourbills.repositories.CategoryRepository;
+import com.example.trackyourbills.repositories.UserRepository;
 import com.example.trackyourbills.services.BudgetTransactionService;
 import com.example.trackyourbills.services.CategoryService;
 import lombok.AllArgsConstructor;
@@ -18,12 +20,19 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
     private final BudgetTransactionService transactionService;
+
 
     @Override
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
         Category category = CategoryMapper.toEntity(categoryDTO);
+
+        User user = findUserById(categoryDTO.getUserId());
+        category.setUser(user);
+        
         Category savedCategory = categoryRepository.save(category);
+
         return CategoryMapper.toDto(savedCategory);
     }
 
@@ -48,7 +57,14 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + id));
 
         category.setName(categoryDTO.getName());
+
+        User user = findUserById(categoryDTO.getUserId());
+        category.setUser(user);
+
         Category updatedCategory = categoryRepository.save(category);
+
+
+
         return CategoryMapper.toDto(updatedCategory);
     }
 
@@ -60,5 +76,11 @@ public class CategoryServiceImpl implements CategoryService {
         transactionService.setCategoryToNullForTransactions(id);
 
         categoryRepository.delete(category);
+    }
+
+    private User findUserById(Long userID) {
+        return userRepository.findById(userID)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found with ID: " + userID));
     }
 }
