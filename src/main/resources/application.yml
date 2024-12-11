@@ -1,0 +1,22 @@
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+spring:
+  application:
+    name: track-your-bills
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bills
+    username: postgresg
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+  jackson:
+    date-format: yyyy-MM-dd
+    time-zone: UTC
