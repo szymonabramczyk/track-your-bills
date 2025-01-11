@@ -1,4 +1,4 @@
-# Home Budget Tracking Application
+# Track Your Bills
 
 The goal of the application is to help users manage their home budget by registering transactions, analyzing finances, and managing budgets and savings goals.
 
