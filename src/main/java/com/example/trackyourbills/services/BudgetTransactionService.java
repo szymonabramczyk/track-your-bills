@@ -11,7 +11,7 @@ public interface BudgetTransactionService {
 
     BudgetTransactionDTO getTransactionById(Long id);
 
-    List<BudgetTransactionDTO> getAllTransactions();
+    List<BudgetTransactionDTO> getAllTransactionsForUser(Long userId);
 
     BudgetTransactionDTO updateTransaction(Long id, BudgetTransactionDTO transactionDTO);
 
@@ -19,7 +19,7 @@ public interface BudgetTransactionService {
 
     void setCategoryToNullForTransactions(Long categoryId);
 
-    List<BudgetTransactionDTO> filterTransactions(LocalDate startDate, LocalDate endDate,
+    List<BudgetTransactionDTO> filterTransactionsForUser(Long userId, LocalDate startDate, LocalDate endDate,
                                                          Long categoryId, String type,
                                                          BigDecimal minValue, BigDecimal maxValue);
 }

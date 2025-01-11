@@ -1,6 +1,7 @@
 package com.example.trackyourbills.controllers;
 
 import com.example.trackyourbills.dto.SavingsGoalDTO;
+import com.example.trackyourbills.services.JwtService;
 import com.example.trackyourbills.services.SavingsGoalService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.List;
 public class SavingsGoalController {
 
     private final SavingsGoalService savingsGoalService;
+    private final JwtService jwtService;
 
     @PostMapping
     public ResponseEntity<SavingsGoalDTO> createSavingsGoal(@RequestBody SavingsGoalDTO savingsGoalDTO) {
@@ -30,8 +32,10 @@ public class SavingsGoalController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SavingsGoalDTO>> getAllSavingsGoals() {
-        List<SavingsGoalDTO> savingsGoals = savingsGoalService.getAllSavingsGoals();
+    public ResponseEntity<List<SavingsGoalDTO>> getAllSavingsGoalsForUser(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtService.extractUserId(token);
+        List<SavingsGoalDTO> savingsGoals = savingsGoalService.getAllSavingsGoalsForUser(userId);
         return ResponseEntity.ok(savingsGoals);
     }
 

@@ -41,8 +41,8 @@ public class SavingsGoalServiceImpl implements SavingsGoalService {
     }
 
     @Override
-    public List<SavingsGoalDTO> getAllSavingsGoals() {
-        return savingsGoalRepository.findAll().stream()
+    public List<SavingsGoalDTO> getAllSavingsGoalsForUser(Long userId) {
+        return savingsGoalRepository.findByUserId(userId).stream()
                 .map(SavingsGoalMapper::toDto)
                 .collect(Collectors.toList());
     }

@@ -7,7 +7,7 @@ spring:
     name: track-your-bills
   datasource:
     url: jdbc:postgresql://localhost:5432/bills
-    username: postgresg
+    username: postgres
     password:
   jpa:
     hibernate:

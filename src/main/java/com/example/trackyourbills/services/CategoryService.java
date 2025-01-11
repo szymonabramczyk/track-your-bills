@@ -9,7 +9,7 @@ public interface CategoryService {
 
     CategoryDTO getCategoryById(Long id);
 
-    List<CategoryDTO> getAllCategories();
+    List<CategoryDTO> getAllCategoriesForUser(Long userId);
 
     CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO);
 

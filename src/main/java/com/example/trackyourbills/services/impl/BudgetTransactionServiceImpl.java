@@ -32,12 +32,14 @@ public class BudgetTransactionServiceImpl implements BudgetTransactionService {
     @Override
     public BudgetTransactionDTO createTransaction(BudgetTransactionDTO transactionDTO) {
         BudgetTransaction transaction = BudgetTransactionMapper.toEntity(transactionDTO);
+        System.out.println(transactionDTO.getCategoryId());
+        System.out.println(transaction.getCategory());
 
         User user = userRepository.findById(transactionDTO.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + transactionDTO.getUserId()));
         transaction.setUser(user);
 
-        if (transaction.getCategory() != null) {
+        if (transactionDTO.getCategoryId() != null) {
             Category category = categoryRepository.findById(transactionDTO.getCategoryId())
                     .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + transactionDTO.getCategoryId()));
             transaction.setCategory(category);
@@ -55,8 +57,8 @@ public class BudgetTransactionServiceImpl implements BudgetTransactionService {
     }
 
     @Override
-    public List<BudgetTransactionDTO> getAllTransactions() {
-        List<BudgetTransaction> transactions = transactionRepository.findAll();
+    public List<BudgetTransactionDTO> getAllTransactionsForUser(Long userId) {
+        List<BudgetTransaction> transactions = transactionRepository.findByUserId(userId);
         return transactions.stream()
                 .map(BudgetTransactionMapper::toDto)
                 .collect(Collectors.toList());
@@ -75,7 +77,7 @@ public class BudgetTransactionServiceImpl implements BudgetTransactionService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + transactionDTO.getUserId()));
         transaction.setUser(user);
 
-        if (transaction.getCategory() != null) {
+        if (transactionDTO.getCategoryId() != null) {
             Category category = categoryRepository.findById(transactionDTO.getCategoryId())
                     .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + transactionDTO.getCategoryId()));
             transaction.setCategory(category);
@@ -103,7 +105,7 @@ public class BudgetTransactionServiceImpl implements BudgetTransactionService {
 
 
     @Override
-    public List<BudgetTransactionDTO> filterTransactions(LocalDate startDate, LocalDate endDate,
+    public List<BudgetTransactionDTO> filterTransactionsForUser(Long userId, LocalDate startDate, LocalDate endDate,
                                                          Long categoryId, String type,
                                                          BigDecimal minValue, BigDecimal maxValue) {
         // Użycie JpaSpecificationExecutor do filtrowania
@@ -111,6 +113,8 @@ public class BudgetTransactionServiceImpl implements BudgetTransactionService {
 
         List<BudgetTransaction> filteredTransactions = transactionRepository.findAll((root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
+
+            predicates.add(criteriaBuilder.equal(root.get("user").get("id"), userId));
 
             // Filtruj po dacie
             if (startDate != null) {

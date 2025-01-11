@@ -7,7 +7,7 @@ import java.util.List;
 public interface SavingsGoalService {
     SavingsGoalDTO createSavingsGoal(SavingsGoalDTO savingsGoalDTO);
     SavingsGoalDTO getSavingsGoalById(Long id);
-    List<SavingsGoalDTO> getAllSavingsGoals();
+    List<SavingsGoalDTO> getAllSavingsGoalsForUser(Long userId);
     SavingsGoalDTO updateSavingsGoal(Long id, SavingsGoalDTO savingsGoalDTO);
     void deleteSavingsGoal(Long id);
 }

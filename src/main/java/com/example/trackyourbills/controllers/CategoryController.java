@@ -2,6 +2,7 @@ package com.example.trackyourbills.controllers;
 
 import com.example.trackyourbills.dto.CategoryDTO;
 import com.example.trackyourbills.services.CategoryService;
+import com.example.trackyourbills.services.JwtService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final JwtService jwtService;
 
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
@@ -29,8 +31,10 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryDTO>> getAllCategories() {
-        List<CategoryDTO> categories = categoryService.getAllCategories();
+    public ResponseEntity<List<CategoryDTO>> getAllCategoriesForUser(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtService.extractUserId(token);
+        List<CategoryDTO> categories = categoryService.getAllCategoriesForUser(userId);
         return ResponseEntity.ok(categories);
     }
 

@@ -1,6 +1,7 @@
 package com.example.trackyourbills.controllers;
 
 import com.example.trackyourbills.dto.UserDTO;
+import com.example.trackyourbills.security.user.ChangePasswordRequest;
 import com.example.trackyourbills.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @CrossOrigin
@@ -46,5 +48,14 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@PathVariable Long userID){
         this.userService.deleteUser(userID);
         return ResponseEntity.ok("User deleted successfully");
+    }
+
+    @PatchMapping
+    public ResponseEntity<?> changePassword(
+            @RequestBody ChangePasswordRequest request,
+            Principal connectedUser
+    ) {
+        userService.changePassword(request, connectedUser);
+        return ResponseEntity.ok().build();
     }
 }

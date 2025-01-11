@@ -44,8 +44,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDTO> getAllCategories() {
-        List<Category> categories = categoryRepository.findAll();
+    public List<CategoryDTO> getAllCategoriesForUser(Long userId) {
+        List<Category> categories = categoryRepository.findByUserId(userId);
         return categories.stream()
                 .map(CategoryMapper::toDto)
                 .collect(Collectors.toList());

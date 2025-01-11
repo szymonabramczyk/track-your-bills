@@ -2,6 +2,7 @@ package com.example.trackyourbills.controllers;
 
 import com.example.trackyourbills.dto.BudgetTransactionDTO;
 import com.example.trackyourbills.services.BudgetTransactionService;
+import com.example.trackyourbills.services.JwtService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import java.util.List;
 public class BudgetTransactionController {
 
     private final BudgetTransactionService transactionService;
+    private final JwtService jwtService;
 
     @PostMapping
     public ResponseEntity<BudgetTransactionDTO> createTransaction(@RequestBody BudgetTransactionDTO transactionDTO) {
@@ -31,8 +33,10 @@ public class BudgetTransactionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BudgetTransactionDTO>> getAllTransactions() {
-        List<BudgetTransactionDTO> transactions = transactionService.getAllTransactions();
+    public ResponseEntity<List<BudgetTransactionDTO>> getAllTransactionsForUser(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtService.extractUserId(token);
+        List<BudgetTransactionDTO> transactions = transactionService.getAllTransactionsForUser(userId);
         return ResponseEntity.ok(transactions);
     }
 
@@ -49,7 +53,8 @@ public class BudgetTransactionController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<BudgetTransactionDTO>> filterTransactions(
+    public ResponseEntity<List<BudgetTransactionDTO>> filterTransactionsForUser(
+            @RequestHeader("Authorization") String authHeader,
             @RequestParam(required = false) LocalDate startDate,
             @RequestParam(required = false) LocalDate endDate,
             @RequestParam(required = false) Long categoryId,
@@ -57,8 +62,11 @@ public class BudgetTransactionController {
             @RequestParam(required = false) BigDecimal minValue,
             @RequestParam(required = false) BigDecimal maxValue) {
 
-        List<BudgetTransactionDTO> transactions = transactionService.filterTransactions(
-                startDate, endDate, categoryId, type, minValue, maxValue);
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtService.extractUserId(token);
+
+        List<BudgetTransactionDTO> transactions = transactionService.filterTransactionsForUser(
+                userId, startDate, endDate, categoryId, type, minValue, maxValue);
 
         return ResponseEntity.ok(transactions);
     }
